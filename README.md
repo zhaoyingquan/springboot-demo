@@ -1,5 +1,5 @@
 # springboot-demo
-基于springboot实现的一个curd项目。
+基于springboot实现的一个curd（增删改查）项目。
 
 实现功能：
 + 用户登录
