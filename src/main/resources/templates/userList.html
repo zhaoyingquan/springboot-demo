@@ -27,86 +27,24 @@
 
                     <!-- 右侧的导航项目 -->
                     <ul class="nav navbar-nav navbar-right">
+                       <!-- <li ><p th:text="${user.username}"></p></li>-->
                         <li><a href="/logout">退出</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">探索 <b class="caret"></b></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="https://github.com/Srpihot">My Github</a></li>
-                                <li><a href="http://srpihot.site">My Site</a></li>
-                                <li><a href="#">Srpihot</a></li>
-                                <li class="divider"></li>
-                                <li><a href="https://www.baidu.com">探索宇宙</a></li>
-                            </ul>
-                        </li>
                     </ul>
                 </div><!-- END .navbar-collapse -->
             </div>
         </nav>
     </div>
 
-    <div class="pull-left">
-        <nav class="menu" data-ride="menu" style="width: 200px">
-            <ul id="treeMenu" class="tree tree-menu" data-ride="tree">
-                <li><a href="#"><i class="icon icon-th"></i>首页</a></li>
-                <li><a href="#"><i class="icon icon-user"></i>个人资料</a></li>
-                <li>
-                    <a href="#"><i class="icon icon-time"></i>更新时间</a>
-                    <ul>
-                        <li><a href="#">今天</a></li>
-                        <li><a href="#">明天</a></li>
-                        <li><a href="#">昨天</a></li>
-                        <li><a href="#">本周</a></li>
-                    </ul>
-                </li>
-                <li><a href="#"><i class="icon icon-trash"></i>垃圾篓</a></li>
-                <li><a href="#"><i class="icon icon-list-ul"></i>全部</a></li>
-                <li class="open">
-                    <a href="#"><i class="icon icon-tasks"></i>状态</a>
-                    <ul>
-                        <li>
-                            <a href="#"><i class="icon icon-circle-blank"></i>已就绪</a>
-                            <ul>
-                                <li><a href="#">已取消</a></li>
-                                <li><a href="#">已关闭</a></li>
-                            </ul>
-                        </li>
-                        <li class="active"><a href="#"><i class="icon icon-play-sign"></i>进行中</a></li>
-                        <li><a href="#"><i class="icon icon-ok-sign"></i>已完成</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </div>
 
-    <div class="pull-right" style="width: 900px;">
+    <div  style="width: 80%;align-items: center;">
         <div class="panel">
-            <div class="panel-heading">
-                搜索条件
-            </div>
-            <div class="panel-body">
-                <div class="input-group">
-                    <div class="input-control search-box search-box-circle has-icon-left has-icon-right search-example"
-                         id="searchboxExample">
-                        <input id="inputSearchExample3" type="search" class="form-control search-input"
-                               placeholder="搜索">
-                        <label for="inputSearchExample3" class="input-control-icon-left search-icon"><i
-                                class="icon icon-search"></i></label>
-                    </div>
-                    <span class="input-group-btn">
-				        <button class="btn btn-primary" type="button">搜索</button>
-				      </span>
-                </div>
-            </div>
-
 
             <table class="table table-bordered">
                 <thead>
                 <th>用户ID</th>
                 <th>账户名</th>
-                <th>用户名</th>
-                <th>用户密码</th>
-                <th>用户权限</th>
-                <th>操作
+                <th>角色</th>
+                <th th:if="${display}">操作
                     <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal">新增
                     </button>
                 </th>
@@ -115,17 +53,15 @@
                 <tr th:each="User:${allUser}">
                     <td th:text="${User.id}"></td>
                     <td th:text="${User.username}"></td>
-                    <td th:text="${User.name}"></td>
-                    <td th:text="${User.password}"></td>
                     <td th:text="${User.grants}"></td>
-                    <td>
+                    <td th:if="${display}">
                         <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#delModal"
                                 th:onclick="delUser([[${User.id}]])">
                             删除
                         </button>
                         <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
                                 data-target="#editModal"
-                                th:onclick="editUser([[${User.id}]],[[${User.username}]],[[${User.password}]],[[${User.name}]],[[${User.grants}]])">
+                                th:onclick="editUser([[${User.id}]],[[${User.username}]],[[${User.password}]],[[${User.grants}]])">
                             修改
                         </button>
 
@@ -196,11 +132,6 @@
                                 <span class="input-group-addon"><i class="icon icon-heart"></i></span>
                             </div>
 
-                            <div class="input-group with-padding">
-                                <span class="input-group-addon">姓名</span>
-                                <input type="text" name="name" class="form-control" placeholder="用户姓名">
-                                <span class="input-group-addon"><i class="icon icon-heart"></i></span>
-                            </div>
 
                             <div class="input-group with-padding">
                                 <span class="input-group-addon">权限</span>
@@ -276,11 +207,6 @@
                                 <span class="input-group-addon"><i class="icon icon-heart"></i></span>
                             </div>
 
-                            <div class="input-group with-padding">
-                                <span class="input-group-addon">姓名</span>
-                                <input type="text" name="name" class="form-control" placeholder="用户姓名">
-                                <span class="input-group-addon"><i class="icon icon-heart"></i></span>
-                            </div>
 
                             <div class="input-group with-padding">
                                 <span class="input-group-addon">权限</span>
@@ -316,11 +242,10 @@
     }
 
     /*修改用户的操作*/
-    function editUser(id, username, password, name, grants) {
+    function editUser(id, username, password, grants) {
         //将值传入到新界面界面中
         document.userUpdateForm.id.value = id;
         document.userUpdateForm.username.value = username;
-        document.userUpdateForm.name.value = name;
         document.userUpdateForm.password.value = password;
         document.userUpdateForm.grants.value = grants;
 

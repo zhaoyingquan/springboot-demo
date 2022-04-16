@@ -14,8 +14,7 @@ import javax.servlet.http.HttpSession;
 public class LoginIntercepors implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
-        String user = (String) session.getAttribute("user");
-//        System.out.println("prehandle："+user);
+        String user = (String) session.getAttribute("username");
         if (user == null){
             request.setAttribute("msg","请先登录");
             request.getRequestDispatcher("/login").forward(request,response);

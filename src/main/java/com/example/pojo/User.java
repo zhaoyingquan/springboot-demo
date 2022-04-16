@@ -1,15 +1,8 @@
 package com.example.pojo;
 
-import com.alibaba.fastjson.JSONObject;
 
 import javax.persistence.*;
 
-/**
- * @className:
- * @author: sir
- * @description: TODO
- * @date: 2021/6/26 - 22:59
- */
 //此类和数据库表user产生关联关系，通过操作对象来操作表
 //dao的意思：dao access object：数据访问对象，和数据操作相关的类放在此包中
 @Entity
@@ -26,8 +19,6 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "name")
-    private String name;
 
     @Column(name = "grants")
     private String grants;
@@ -57,13 +48,6 @@ public class User {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getGrants() {
         return grants;
@@ -79,7 +63,6 @@ public class User {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
                 ", grants='" + grants + '\'' +
                 '}';
     }

@@ -12,12 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-/**
- * @className:
- * @author: srpihot
- * @description: TODO
- * @date: 2021/6/26 - 22：00
- */
 @Controller
 public class UserController {
 
@@ -26,13 +20,20 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping("/index")
-    public String index() { return "login"; }
+    public String index() {
+        return "login";
+    }
+
     @RequestMapping("/index.html")
-    public String indexhtml(){ return "login";}
+    public String indexhtml() {
+        return "login";
+    }
+
     @RequestMapping("/login")
     public String login() {
         return "login";
     }
+
     @RequestMapping("/doLogin")
     public String doLogin(@RequestParam String username, @RequestParam String password,
                           @RequestParam(value = "pageNum", defaultValue = "0") int pageNum,
@@ -40,67 +41,89 @@ public class UserController {
 
         User user = userService.checkUser(username, password);
         if (user != null && user.getUsername().equals(username) && user.getPassword().equals(password)) {
-            if (user.getGrants().equals("管理员")){
-                Page<User> allUser = userService.getUserList(pageNum, pageSize);
-                model.addAttribute("allUser", allUser);
-                session.setAttribute("user",username);
-//                System.out.println(session.getAttribute("user"));
-                return "userList";
-            }else {
-                model.addAttribute("msg","权限级别过低！无法登录！");
-                return "login";
-            }
-        }else {
+            Page<User> allUser = userService.getUserList(pageNum, pageSize);
+            model.addAttribute("allUser", allUser);
+            model.addAttribute("display", user.getGrants().equals("管理员") ? true : false);
+            session.setAttribute("user", user);
+            session.setAttribute("username", user.getUsername());
+            return "userList";
+        } else {
             model.addAttribute("msg", "用户名或密码错误");
             return "login";
         }
     }
+
     @RequestMapping("/logout")
-    public String logout(HttpSession session){
+    public String logout(HttpSession session) {
         session.removeAttribute("user");
         return "login";
     }
+
     @RequestMapping("/userList")
     public String userList(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum,
-                       @RequestParam(value = "pageSize", defaultValue = "8") int pageSize) {
-                Page<User> allUser = userService.getUserList(pageNum, pageSize);
-                model.addAttribute("allUser", allUser);
-                return "userList";
+                           @RequestParam(value = "pageSize", defaultValue = "8") int pageSize, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        Page<User> allUser = userService.getUserList(pageNum, pageSize);
+        model.addAttribute("allUser", allUser);
+        model.addAttribute("display", user.getGrants().equals("管理员") ? true : false);
+        return "userList";
     }
-    /** 编辑用户 **/
+
+    /**
+     * 编辑用户
+     **/
     @RequestMapping("/editUser")
     public String editUser(@RequestParam String username, @RequestParam String password,
-                           @RequestParam String name, @RequestParam String grants,
-                           @RequestParam Integer id, Model model) {
-        userService.editUser(username, password, name, grants, id);
+                           @RequestParam String grants,
+                           @RequestParam Integer id, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (!"管理员".equals(user.getGrants())) {
+            model.addAttribute("msg", "无权操作！");
+            return "login";
+        }
+        userService.editUser(username, password, grants, id);
         List<User> allUser = userService.selectAll();
         model.addAttribute("allUser", allUser);
 
         return "redirect:/userList";
     }
-    /** 删除用户 **/
+
+    /**
+     * 删除用户
+     **/
     @RequestMapping("/deleteUser")
-    public String delUser(Integer id, Model model) {
+    public String delUser(Integer id, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (!"管理员".equals(user.getGrants())||user.getId()==id.intValue()) {
+            model.addAttribute("msg", "无权操作！");
+            return "login";
+        }
         userService.delUserById(id);
         List<User> allUser = userService.selectAll();
         model.addAttribute("allUser", allUser);
         return "redirect:/userList";
     }
-    /** 添加用户 **/
+
+    /**
+     * 添加用户
+     **/
     @RequestMapping("/addUser")
     public String addUser(@RequestParam String username, @RequestParam String password,
-                          @RequestParam String name, @RequestParam String grants, Model model) {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setName(name);
-        user.setGrants(grants);
-        userService.saveUser(user);
+                          @RequestParam String grants, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (!"管理员".equals(user.getGrants())) {
+            model.addAttribute("msg", "无权操作！");
+            return "login";
+        }
+        User user1 = new User();
+        user1.setUsername(username);
+        user1.setPassword(password);
+        user1.setGrants(grants);
+        userService.saveUser(user1);
         List<User> allUser = userService.selectAll();
         model.addAttribute("allUser", allUser);
         return "redirect:/userList";
     }
-
 
 
 }

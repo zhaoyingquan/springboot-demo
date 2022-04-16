@@ -9,13 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * @className:
- * @author: Srpihot
- * @description: TODO
- * @date: 2021/6/26 - 22:03
- */
-
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -32,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      * 查询所有的数据
      * @return
      */
-    @Query(value = "select u from User u")
+    @Query(value = "select u from User u ")
     List<User> findAll();
 
 
@@ -48,13 +41,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      * 根据id修改用户
      * @param username
      * @param password
-     * @param name
      * @param grants
      * @param id
      */
     @Transactional
     @Modifying
-    @Query(value = "update User u set u.username = ?1,u.password = ?2,u.name = ?3, u.grants = ?4 where u.id = ?5")
-    void updateUser(String username,String password,String name,String grants,Integer id);
+    @Query(value = "update User u set u.username = ?1,u.password = ?2, u.grants = ?3 where u.id = ?4")
+    void updateUser(String username,String password,String grants,Integer id);
 
 }

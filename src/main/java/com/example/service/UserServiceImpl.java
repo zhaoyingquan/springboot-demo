@@ -10,13 +10,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 
-/**
- * @className:
- * @author: srpihot
- * @description: TODO
- * @date: 2021/6/26 - 22:07
- */
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -53,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> getUserList(int pageNum, int pageSize) {
 
-        Sort sort = Sort.by(Sort.Direction.DESC,"id");
+        Sort sort = Sort.by(Sort.Direction.ASC,"id");
         Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Page<User> users = userRepository.findAll(pageable);
         return users;
@@ -66,7 +61,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User saveUser(User user) {
-
         return userRepository.save(user);
     }
 
@@ -83,13 +77,12 @@ public class UserServiceImpl implements UserService {
      * 根据id修改用户
      * @param username
      * @param password
-     * @param name
      * @param grants
      * @param id
      */
     @Override
-    public void editUser(String username, String password, String name, String grants, Integer id) {
-        userRepository.updateUser(username,password,name,grants,id);
+    public void editUser(String username, String password,  String grants, Integer id) {
+        userRepository.updateUser(username,password,grants,id);
     }
 
 
