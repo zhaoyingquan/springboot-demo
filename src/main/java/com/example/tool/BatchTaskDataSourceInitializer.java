@@ -15,7 +15,7 @@ public class BatchTaskDataSourceInitializer {
     /**
      * 构建Resource对象
      */
-    @Value("classpath:user.sql")
+    @Value("classpath:user1.sql")
     private Resource businessScript;
 
     /**
